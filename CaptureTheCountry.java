@@ -22,10 +22,10 @@ public class CaptureTheCountry extends Server
 
     private int isPlayer1Hint = 0;
     private int isPlayer2Hint = 0;
-    private String recentCountry1 = "";
-    private String recentCountry2 = "";
+    private String recentCountry1 = "";        //last clicked country for player 1
+    private String recentCountry2 = "";        //last clicked country for player 2
 
-    private final Map<String, String> powerupMap = new HashMap<>();
+    private final Map<String, String> powerupMap = new HashMap<>();        //holds country name and corresponding powerup
     private final ArrayList<String> usedCountries = new ArrayList<>();
     private final Set<String> neighbors;
     private int hintCount;
@@ -39,7 +39,7 @@ public class CaptureTheCountry extends Server
         graph = new CountriesGraph();
         graph.loadData("CountryBorders.CSV");
 
-        goldenCountry = graph.getRandomCountry();
+        goldenCountry = graph.getRandomCountry();        //choose golden country randomly
 
         String startC1, startC2;
         List<String> pathC1, pathC2;
@@ -57,6 +57,8 @@ public class CaptureTheCountry extends Server
             pathC2 = graph.bfsExclude(startC2, goldenCountry, startC1);
         } 
         while (startC2.equals(goldenCountry) || startC2.equals(startC1) || pathC2.size() < 2);
+
+        //TODO ^^: there's a usedCountries arraylist - add to it here and remove while loops.
 
         country1 = startC1;
         country2 = startC2;
@@ -107,9 +109,9 @@ public class CaptureTheCountry extends Server
 
             else if ("countryhint".equals(powerup))
                 addCountryColor(country, "#FF00FF"); // Magenta*/
-        }
+        }                  //set the random countries
 
-        neighbors = new HashSet<>(CountriesGraph.getNeighbors(goldenCountry));
+        neighbors = new HashSet<>(CountriesGraph.getNeighbors(goldenCountry));            //get the neighbhors of golden country
         updateTurnDisplay();
     }
 
@@ -134,6 +136,7 @@ public class CaptureTheCountry extends Server
     private void updateTurnDisplay() 
     {
         String playerTurn = isPlayer1Turn ? player1.getName() : player2.getName();
+        //if isPlayer1Turn, playerTurn is player1 else it is player2
         addCountryColor("distance", playerTurn + "'s turn");
     }
 
@@ -172,7 +175,7 @@ public class CaptureTheCountry extends Server
             return;
         }
 
-        if(powerupMap.containsKey(country)) 
+        if(powerupMap.containsKey(country)) //country is clicked country.
         {
             List<String> bestPath = null;
             int minDistance = Integer.MAX_VALUE;
@@ -187,7 +190,7 @@ public class CaptureTheCountry extends Server
             }
 
 
-            if (bestPath == null || bestPath.isEmpty() || bestPath.size() < 2) 
+            if (bestPath == null || bestPath.isEmpty() || bestPath.size() < 2)         //TODO: check do i really need both isEmpty and size<2 (was it being weird or was i)
             {
                 addCountryColor("distance", "No path to selected country! Try again " + currentPlayer.getName());
                 return;
